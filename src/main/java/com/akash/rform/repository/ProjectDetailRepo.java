@@ -7,5 +7,4 @@ import org.springframework.data.repository.CrudRepository;
 import com.akash.rform.entity.ProjectDetail;
 
 public interface ProjectDetailRepo extends CrudRepository<ProjectDetail, Serializable> {
-
 }
