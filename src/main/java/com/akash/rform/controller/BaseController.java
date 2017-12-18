@@ -32,7 +32,7 @@ public class BaseController {
 	}
 
 	@RequestMapping(value = "/getEmployeeById", method = RequestMethod.GET)
-	public EmployeeDetail getEmployeeById(@RequestParam Long id) {
+	public EmployeeDetail test(@RequestParam Long id) {
 		return empDetailRepo.findOne(id);
 	}
 
