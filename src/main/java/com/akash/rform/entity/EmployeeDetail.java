@@ -1,10 +1,16 @@
 package com.akash.rform.entity;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -14,28 +20,23 @@ public class EmployeeDetail {
 	@Id
 	@Column(name = "EMPNO")
 	private Long empNo;
-	
+
 	@Column(name = "EMP_NAME")
 	private String empName;
-	
+
 	@Column(name = "DESIGNATION")
 	private String designation;
-	
+
 	@Column(name = "DATE_OF_EMPLOYEMENT")
 	private Date dateOfEmployement;
-	
+
 	@Column(name = "ACTIVE_IND")
 	private char activeInd;
 
-	public EmployeeDetail(Long empNo, String empName, String designation, Date dateOfEmployement, char activeInd) {
-		super();
-		this.empNo = empNo;
-		this.empName = empName;
-		this.designation = designation;
-		this.dateOfEmployement = dateOfEmployement;
-		this.activeInd = activeInd;
-	}
-	
+	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	@JoinColumn(name = "Emp_id")
+	private Set<ReimbursementDetails> reimbursements = new HashSet<>();
+
 	public EmployeeDetail() {
 	}
 
@@ -79,57 +80,23 @@ public class EmployeeDetail {
 		this.activeInd = activeInd;
 	}
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + activeInd;
-		result = prime * result + ((dateOfEmployement == null) ? 0 : dateOfEmployement.hashCode());
-		result = prime * result + ((designation == null) ? 0 : designation.hashCode());
-		result = prime * result + ((empName == null) ? 0 : empName.hashCode());
-		result = prime * result + ((empNo == null) ? 0 : empNo.hashCode());
-		return result;
+	public Set<ReimbursementDetails> getReimbursements() {
+		return reimbursements;
 	}
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		EmployeeDetail other = (EmployeeDetail) obj;
-		if (activeInd != other.activeInd)
-			return false;
-		if (dateOfEmployement == null) {
-			if (other.dateOfEmployement != null)
-				return false;
-		} else if (!dateOfEmployement.equals(other.dateOfEmployement))
-			return false;
-		if (designation == null) {
-			if (other.designation != null)
-				return false;
-		} else if (!designation.equals(other.designation))
-			return false;
-		if (empName == null) {
-			if (other.empName != null)
-				return false;
-		} else if (!empName.equals(other.empName))
-			return false;
-		if (empNo == null) {
-			if (other.empNo != null)
-				return false;
-		} else if (!empNo.equals(other.empNo))
-			return false;
-		return true;
+	public void setReimbursements(Set<ReimbursementDetails> reimbursements) {
+		this.reimbursements = reimbursements;
 	}
 
-	@Override
-	public String toString() {
-		return "EmployeeDetail [empNo=" + empNo + ", empName=" + empName + ", designation=" + designation
-				+ ", dateOfEmployement=" + dateOfEmployement + ", activeInd=" + activeInd + "]";
+	public EmployeeDetail(Long empNo, String empName, String designation, Date dateOfEmployement, char activeInd,
+			Set<ReimbursementDetails> reimbursements) {
+		super();
+		this.empNo = empNo;
+		this.empName = empName;
+		this.designation = designation;
+		this.dateOfEmployement = dateOfEmployement;
+		this.activeInd = activeInd;
+		this.reimbursements = reimbursements;
 	}
-	
-	
+
 }
