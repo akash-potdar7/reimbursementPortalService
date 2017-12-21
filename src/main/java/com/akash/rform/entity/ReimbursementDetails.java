@@ -5,9 +5,12 @@ import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 @Entity
@@ -16,6 +19,12 @@ public class ReimbursementDetails {
 
 	@Id
 	@Column(name = "id")
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator="reimbursement_seq")
+	@SequenceGenerator(
+	    name="reimbursement_seq",
+	    sequenceName="reimbursement_sequence",
+	    allocationSize=20
+	)
 	private Long id;
 
 	@Column(name = "bill_date")

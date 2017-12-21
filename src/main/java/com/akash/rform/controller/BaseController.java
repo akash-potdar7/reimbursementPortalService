@@ -1,7 +1,8 @@
 package com.akash.rform.controller;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -33,7 +34,7 @@ public class BaseController {
 
 	@Autowired
 	ProjectDetailRepo projectDetailRepo;
-	
+
 	@Autowired
 	ReimbursementDetailsRepo reimbursementDetailsRepo;
 
@@ -56,38 +57,48 @@ public class BaseController {
 		List<ProjectDetail> l = (List<ProjectDetail>) projectDetailRepo.findAll();
 		return l;
 	}
-	
+
 	@RequestMapping(value = "/saveReimbursements", method = RequestMethod.POST)
-	public void saveReimbursements(@RequestBody Employee emp) {
-		System.out.println("R's= "+emp.getReimbursements());
-		//save into ReimbursementDetails
-		for(Reimbursement reimbursement : emp.getReimbursements()) {
-			ReimbursementDetails entity = new ReimbursementDetails();
+	public EmployeeDetail saveReimbursements(@RequestBody Employee emp) {
+
+		EmployeeDetail employeeDetailEntity = new EmployeeDetail();
+
+		employeeDetailEntity.setActiveInd(emp.getActiveInd());
+		employeeDetailEntity.setDateOfEmployement(emp.getDateOfEmployement());
+		employeeDetailEntity.setDesignation(emp.getDesignation());
+		employeeDetailEntity.setEmpName(emp.getEmpName());
+		employeeDetailEntity.setEmpNo(emp.getEmpNo());
+
+		Set<ReimbursementDetails> reimbursementSet = new HashSet<>();
+		for (Reimbursement reimbursement : emp.getReimbursements()) {
+			ReimbursementDetails reimbursementDetailsEntity = new ReimbursementDetails();
 			ProjectDetail projectDetailEntity = new ProjectDetail();
 			RType rTypeEntity = new RType();
 
-			entity.setAmount(reimbursement.getAmount());
-			entity.setBillDate(reimbursement.getBillDate());
-			entity.setBillNumber(reimbursement.getBillNumber());
-			entity.setId(reimbursement.getId());
-			entity.setNoOfPersons(reimbursement.getNoOfPersons());
-			
+			reimbursementDetailsEntity.setAmount(reimbursement.getAmount());
+			reimbursementDetailsEntity.setBillDate(reimbursement.getBillDate());
+			reimbursementDetailsEntity.setBillNumber(reimbursement.getBillNumber());
+			reimbursementDetailsEntity.setId(reimbursement.getId());
+			reimbursementDetailsEntity.setNoOfPersons(reimbursement.getNoOfPersons());
+
 			projectDetailEntity.setProjectId(reimbursement.getProjectDetail().getProjectId());
 			projectDetailEntity.setProjectName(reimbursement.getProjectDetail().getProjectName());
 			projectDetailEntity.setProjectType(reimbursement.getProjectDetail().getProjectType());
 			projectDetailEntity.setActiveInd(reimbursement.getProjectDetail().getActiveInd());
-			
+
 			rTypeEntity.setTypeId(reimbursement.getrType().getTypeId());
 			rTypeEntity.setTypeName(reimbursement.getrType().getTypeName());
 			rTypeEntity.setPriceLimit(reimbursement.getrType().getPriceLimit());
 			rTypeEntity.setActiveInd(reimbursement.getrType().getActiveInd());
-			
-			entity.setProjectDetail(projectDetailEntity);
-			entity.setrType(rTypeEntity);
-			
-			reimbursementDetailsRepo.save(entity);
+
+			reimbursementDetailsEntity.setProjectDetail(projectDetailEntity);
+			reimbursementDetailsEntity.setrType(rTypeEntity);
+			reimbursementSet.add(reimbursementDetailsEntity);
+			reimbursementDetailsRepo.save(reimbursementDetailsEntity);
 		}
+		employeeDetailEntity.setReimbursements(reimbursementSet);
+
+		return empDetailRepo.save(employeeDetailEntity);
 	}
-	
 
 }
